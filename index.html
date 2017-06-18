@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>img preload</title>
+	<style>
+		html,body {
+			height: 100%;
+			width: 100%;
+		}
+		.box {
+			text-align: center;
+			display: block;
+		}
+		.btn {
+			display: inline-block;
+			height: 20px;
+			border: solid 1px #ccc;
+			padding:10px;
+			color:#333;
+			text-decoration: none;
+			margin-right: 50px;
+			background-color: #fff;
+		}
+		.btn:hover {
+			background-color: #eee;
+		}
+
+		.loading {
+			position: fixed;
+			left: 0;
+			top: 0;
+			width:100%;
+			height: 100%;
+			background-color: #eee;
+			text-align: center;
+		}
+		.progress {
+			margin: 250px auto;
+		}
+	</style>
+</head>
+<body>
+	<div class="box">
+		
+		<img width="800"  id="img">
+		<p>
+			<a href="javascript:void 0" class="btn" data-control="prev">prev</a>
+			<a href="javascript:void 0" class="btn" data-control="next">next</a>
+		</p>
+	</div>
+	<div class="loading" id="loading">
+		<p class="progress" id="progress">
+			0%
+		</p>
+	</div>
+	<script>
+		let imgs = ['http://img.ivsky.com/img/bizhi/pre/201105/10/bing-007.jpg',
+		"http://pic4.zhongsou.com/image/4803aac3dd78bb552b0.jpg",
+		"http://img.ivsky.com/img/bizhi/pre/201105/10/bing.jpg",
+		"http://www.wmpic.me/wp-content/uploads/2014/03/20140320153225512.jpg",
+		"http://img.ivsky.com/img/bizhi/pre/201105/10/bing-018.jpg",
+		"http://pic4.zhongsou.com/image/4803aac3dd78bb552b0.jpg",
+		"http://img.ivsky.com/img/bizhi/pre/201105/10/bing.jpg",
+		"http://www.wmpic.me/wp-content/uploads/2014/03/20140320153225512.jpg",
+		"http://img.ivsky.com/img/bizhi/pre/201105/10/bing-018.jpg",
+		"http://pic4.zhongsou.com/image/4803aac3dd78bb552b0.jpg",
+		"http://img.ivsky.com/img/bizhi/pre/201105/10/bing.jpg",
+		"http://www.wmpic.me/wp-content/uploads/2014/03/20140320153225512.jpg",
+		"http://img.ivsky.com/img/bizhi/pre/201105/10/bing-018.jpg",
+		"http://img1.3lian.com/img013/v4/76/d/101.jpg"];
+
+		let length = imgs.length,
+		index = 0,
+		loadedCnt = 0,
+		progress = document.querySelector('#progress'),
+		loading = document.querySelector('#loading');
+		for(let i = 0;  i < length; i++) {
+			var imgObj = new Image();
+			imgObj.src = imgs[i];
+			imgObj.onload = function () {
+				console.log('onload');
+				loadedCnt ++;
+				progress.innerText = ((loadedCnt/length ) * 100).toFixed(2) + "%";
+				if(loadedCnt == length) {
+					loading.style.display = 'none';
+				}
+			};
+			imgObj.onerror = function () {
+				console.log('error');
+				loadedCnt ++;
+				progress.innerText = (loadedCnt/length ).toFixed(2) * 100 + "%";
+			}
+		}
+		let img = document.querySelector('#img');
+		img.src = imgs[index];
+		let btns = document.querySelectorAll('.btn');
+		for(let i = 0; i< btns.length ; i++) {
+			btns[i].onclick = function () {
+				let temp = this;
+				if(temp.getAttribute('data-control') == 'prev') {
+					if(Math.max(--index,0) == 0){
+						index = 0;
+					}
+					img.src = imgs[index]
+				}
+				if(temp.getAttribute('data-control') == 'next') {
+					if(Math.min(++index,length-1) == (length-1)) {
+						index = length - 1;
+					}
+					img.src = imgs[index];
+				}
+			};
+		}
+	</script>
+</body>
+</html>
